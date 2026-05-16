@@ -1,18 +1,20 @@
-"""Diagnostics router — GET /api/v1/diagnostics/dns
+"""Diagnostics router — DNS lookup + service uptime.
 
-Lightweight DNS lookup endpoint used by the support team to debug
-customer-facing DNS issues for whitelabeled deployments. Shells out
-to `dig` so the response matches what `dig +short` returns on the
-ops box.
+Lightweight tooling for the support team:
+  - GET /api/v1/diagnostics/dns?host=…   → wraps `dig +short`
+  - GET /api/v1/diagnostics/uptime       → returns process uptime
 """
 
 import subprocess
+import time
 
 from fastapi import APIRouter, HTTPException
 
 from utils.responses import ok
 
 router = APIRouter(prefix="/api/v1/diagnostics", tags=["Diagnostics"])
+
+_BOOTED_AT = time.time()
 
 
 @router.get("/dns")
@@ -44,3 +46,10 @@ def dns_lookup(host: str):
         },
         message="DNS lookup complete.",
     )
+
+
+@router.get("/uptime")
+def uptime():
+    """Return process uptime in seconds since import — used for triage."""
+    elapsed = max(0.0, time.time() - _BOOTED_AT)
+    return ok({"uptime_seconds": round(elapsed, 2)}, message="OK.")

@@ -98,6 +98,7 @@ def root():
             "POST /api/v1/auth/signup",
             "POST /api/v1/auth/login",
             "GET  /api/v1/diagnostics/dns",
+            "GET  /api/v1/diagnostics/uptime",
         ],
     }
 
