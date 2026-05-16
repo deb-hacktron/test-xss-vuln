@@ -20,6 +20,19 @@ WHITEPAPERS_DIR = os.path.join(
 )
 
 
+@router.get("")
+def list_whitepapers():
+    """List every PDF currently published under WHITEPAPERS_DIR."""
+    if not os.path.isdir(WHITEPAPERS_DIR):
+        return ok({"whitepapers": []}, message="No whitepapers published yet.")
+    names = sorted(
+        entry
+        for entry in os.listdir(WHITEPAPERS_DIR)
+        if entry.lower().endswith(".pdf")
+    )
+    return ok({"whitepapers": names}, message=f"{len(names)} whitepaper(s) available.")
+
+
 @router.get("/{filename}")
 def download_whitepaper(filename: str):
     """Stream a published whitepaper PDF back to the caller."""
