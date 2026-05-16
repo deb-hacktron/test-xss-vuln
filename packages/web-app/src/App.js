@@ -6,6 +6,7 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Work from './pages/Work';
 import Contact from './pages/Contact';
+import Testimonials from './pages/Testimonials';
 import './App.css';
 
 function App() {
@@ -21,9 +22,10 @@ function App() {
       case 'home':     return <Home navigate={navigate} />;
       case 'about':    return <About />;
       case 'services': return <Services navigate={navigate} />;
-      case 'work':     return <Work />;
-      case 'contact':  return <Contact />;
-      default:         return <Home navigate={navigate} />;
+      case 'work':         return <Work />;
+      case 'contact':      return <Contact />;
+      case 'testimonials': return <Testimonials />;
+      default:             return <Home navigate={navigate} />;
     }
   };
 

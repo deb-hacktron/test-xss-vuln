@@ -1,0 +1,31 @@
+.testimonials .preview-card {
+  padding: 32px;
+  margin-bottom: 24px;
+}
+.testimonials .preview-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted, #888);
+  margin-bottom: 12px;
+}
+.testimonials .preview-quote {
+  font-size: 20px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.testimonials .preview-author {
+  color: var(--muted, #888);
+}
+.testimonials .testimonial-card {
+  padding: 24px;
+}
+.testimonials .testimonial-quote {
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.testimonials .testimonial-author {
+  color: var(--muted, #888);
+  font-size: 14px;
+}
