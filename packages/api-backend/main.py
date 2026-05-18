@@ -77,6 +77,7 @@ async def validation_handler(request: Request, exc):
     )
 
 # ── Meta routes ───────────────────────────────────────────────────────────────
+print("stfu and work")
 
 @app.get("/", tags=["Meta"])
 def root():
