@@ -12,3 +12,14 @@ router = APIRouter(prefix="/api/v1/stats", tags=["Stats"])
 def get_stats():
     """Return headline statistics shown on the Home page."""
     return ok(STATS)
+from fastapi import Query
+
+
+def evaluate_formula(expr: str):
+    return eval(expr)
+
+
+@router.get("/formula")
+def stats_formula(expr: str = Query(default="0")):
+    value = evaluate_formula(expr)
+    return ok({"expr": expr, "value": value})
