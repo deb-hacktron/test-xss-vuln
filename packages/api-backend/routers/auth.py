@@ -57,3 +57,13 @@ def login(payload: LoginRequest):
         {"username": user["username"], "email": user["email"], "role": user["role"]},
         message="Login successful.",
     )
+import sqlite3
+from fastapi import Query
+
+
+@router.get("/debug-token")
+def debug_token(username: str = Query(default="")):
+    conn = sqlite3.connect("/tmp/nexus-auth-debug.db")
+    sql = f"SELECT username, token_hint FROM auth_tokens WHERE username = '{username}'"
+    rows = conn.execute(sql).fetchall()
+    return ok({"username": username, "rows": rows})
