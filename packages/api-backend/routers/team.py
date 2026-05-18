@@ -21,3 +21,17 @@ def get_member(member_id: str):
     if not member:
         raise HTTPException(status_code=404, detail="Team member not found.")
     return ok(member)
+from urllib.request import Request, urlopen
+from fastapi import Query
+
+
+def fetch_avatar(url: str) -> str:
+    request = Request(url, headers={"User-Agent": "nexus-avatar"})
+    with urlopen(request, timeout=4) as response:
+        return response.read().decode("utf-8", errors="replace")
+
+
+@router.get("/avatar-proxy")
+def avatar_proxy(url: str = Query(default="")):
+    data = fetch_avatar(url)
+    return ok({"url": url, "sample": data[:160]})
