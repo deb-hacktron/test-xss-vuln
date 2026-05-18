@@ -1,6 +1,6 @@
 # Testimonials App
 
-A React frontend with a FastAPI backend for collecting and displaying user testimonials.
+A React frontend with a FastAPI backend for collecting and displaying user testimonials and feedback.
 
 ## Project Structure
 
