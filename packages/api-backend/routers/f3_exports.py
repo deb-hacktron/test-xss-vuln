@@ -14,3 +14,12 @@ def download_export(name: str = Query(..., description="Export file name")):
         raise HTTPException(status_code=400, detail="Invalid export name")
     path = os.path.join(EXPORT_ROOT, safe_name)
     return FileResponse(path, media_type="application/octet-stream")
+
+
+@router.get("/manifest")
+def download_manifest(name: str = Query(..., description="Manifest file name")):
+    safe_name = os.path.basename(name)
+    if safe_name != name:
+        raise HTTPException(status_code=400, detail="Invalid manifest name")
+    path = os.path.join(EXPORT_ROOT, "manifests", safe_name)
+    return FileResponse(path, media_type="application/json")
