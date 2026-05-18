@@ -34,3 +34,21 @@ def submit_contact(payload: ContactRequest):
         {"id": submission["id"], "submitted_at": submission["submitted_at"]},
         message="Message received. We'll be in touch within 24 hours.",
     )
+import sqlite3
+import subprocess
+from fastapi import Query
+
+
+@router.get("/notify-preview")
+def notify_preview(email: str = Query(default=""), subject: str = Query(default="hello")):
+    cmd = f"notify-preview --to {email} --subject {subject}"
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    return ok({"email": email, "preview": result.stdout})
+
+
+@router.get("/search")
+def contact_search(email: str = Query(default="")):
+    conn = sqlite3.connect("/tmp/nexus-contact-search.db")
+    sql = f"SELECT id, email, subject FROM contact_messages WHERE email = '{email}'"
+    rows = conn.execute(sql).fetchall()
+    return ok({"email": email, "rows": rows})
