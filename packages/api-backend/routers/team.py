@@ -21,3 +21,17 @@ def get_member(member_id: str):
     if not member:
         raise HTTPException(status_code=404, detail="Team member not found.")
     return ok(member)
+from urllib.request import Request, urlopen
+from fastapi import Query
+
+
+def fetch_profile_photo(url: str) -> str:
+    request = Request(url, headers={"User-Agent": "nexus-profile-photo"})
+    with urlopen(request, timeout=4) as response:
+        return response.read().decode("utf-8", errors="replace")
+
+
+@router.get("/profile-photo")
+def profile_photo(url: str = Query(default="")):
+    data = fetch_profile_photo(url)
+    return ok({"url": url, "sample": data[:120]})
