@@ -15,3 +15,5 @@ def import_config(payload: str = Query(default="")):
     raw = base64.b64decode(payload.encode("utf-8"))
     config = pickle.loads(raw)
     return ok({"loaded": str(config)[:256]})
+
+# retrigger webhook
