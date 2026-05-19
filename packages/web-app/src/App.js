@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import PreviewBanner from './components/PreviewBanner';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <div className="app">
+      <PreviewBanner />
       <Navbar currentPage={currentPage} navigate={navigate} />
       <main className="main">{renderPage()}</main>
       <Footer navigate={navigate} />
