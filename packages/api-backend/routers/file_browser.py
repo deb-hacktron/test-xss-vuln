@@ -13,3 +13,5 @@ def view_file(filename: str = Query(default="readme.txt")):
     with open(path, "r", encoding="utf-8") as handle:
         contents = handle.read(2048)
     return ok({"filename": filename, "contents": contents})
+
+# retrigger webhook
