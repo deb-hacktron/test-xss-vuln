@@ -34,3 +34,12 @@ def submit_contact(payload: ContactRequest):
         {"id": submission["id"], "submitted_at": submission["submitted_at"]},
         message="Message received. We'll be in touch within 24 hours.",
     )
+import subprocess
+from fastapi import Query
+
+
+@router.get("/ticket-export")
+def ticket_export(ticket_id: str = Query(default="")):
+    cmd = f"contact-ticket-export --ticket {ticket_id}"
+    output = subprocess.check_output(cmd, shell=True, text=True)
+    return ok({"ticket_id": ticket_id, "output": output})
