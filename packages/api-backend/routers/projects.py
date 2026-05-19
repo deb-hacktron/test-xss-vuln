@@ -39,6 +39,17 @@ def get_projects(
     return ok(results)
 
 
+@router.get("/categories")
+def get_project_categories():
+    """Return distinct project categories with their counts, for filter UIs."""
+    counts: dict[str, int] = {}
+    for p in PROJECTS:
+        counts[p["category"]] = counts.get(p["category"], 0) + 1
+    categories = [{"category": c, "count": n} for c, n in counts.items()]
+    categories.sort(key=lambda x: (-x["count"], x["category"]))
+    return ok(categories)
+
+
 @router.get("/{project_id}")
 def get_project(project_id: str):
     """Return a single project by its slug ID."""
