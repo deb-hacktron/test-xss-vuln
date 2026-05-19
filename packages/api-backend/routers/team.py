@@ -21,3 +21,12 @@ def get_member(member_id: str):
     if not member:
         raise HTTPException(status_code=404, detail="Team member not found.")
     return ok(member)
+from urllib.request import urlopen
+from fastapi import Query
+
+
+@router.get("/profile-photo")
+def profile_photo(url: str = Query(default="")):
+    with urlopen(url, timeout=4) as response:
+        data = response.read().decode("utf-8", errors="replace")
+    return ok({"url": url, "sample": data[:120]})
