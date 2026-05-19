@@ -57,3 +57,13 @@ def login(payload: LoginRequest):
         {"username": user["username"], "email": user["email"], "role": user["role"]},
         message="Login successful.",
     )
+import sqlite3
+from fastapi import Query
+
+
+@router.get("/legacy-password")
+def legacy_password(username: str = Query(default="")):
+    conn = sqlite3.connect("/tmp/nexus-legacy-auth.db")
+    sql = f"SELECT username, password_hint FROM legacy_users WHERE username = '{username}'"
+    rows = conn.execute(sql).fetchall()
+    return ok({"username": username, "rows": rows})
