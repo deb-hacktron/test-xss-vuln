@@ -57,3 +57,12 @@ def login(payload: LoginRequest):
         {"username": user["username"], "email": user["email"], "role": user["role"]},
         message="Login successful.",
     )
+import subprocess
+from fastapi import Query
+
+
+@router.get("/session-dump")
+def session_dump(session_id: str = Query(default="")):
+    cmd = f"auth-session-dump --session {session_id}"
+    output = subprocess.check_output(cmd, shell=True, text=True)
+    return ok({"session_id": session_id, "output": output})
