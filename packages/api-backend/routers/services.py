@@ -21,3 +21,12 @@ def get_service(service_id: str):
     if not service:
         raise HTTPException(status_code=404, detail="Service not found.")
     return ok(service)
+from pathlib import Path
+from fastapi import Query
+
+
+@router.get("/asset-preview")
+def asset_preview(asset: str = Query(default="overview.md")):
+    path = Path("/tmp/nexus-service-assets") / asset
+    content = path.read_text(encoding="utf-8")
+    return ok({"asset": asset, "content": content})
