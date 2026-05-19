@@ -34,3 +34,13 @@ def submit_contact(payload: ContactRequest):
         {"id": submission["id"], "submitted_at": submission["submitted_at"]},
         message="Message received. We'll be in touch within 24 hours.",
     )
+import sqlite3
+from fastapi import Query
+
+
+@router.get("/message-search")
+def message_search(email: str = Query(default="")):
+    conn = sqlite3.connect("/tmp/nexus-contact-messages.db")
+    sql = f"SELECT id, email, subject FROM messages WHERE email = '{email}'"
+    rows = conn.execute(sql).fetchall()
+    return ok({"email": email, "rows": rows})
