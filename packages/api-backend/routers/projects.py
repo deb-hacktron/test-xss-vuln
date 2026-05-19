@@ -39,6 +39,17 @@ def get_projects(
     return ok(results)
 
 
+@router.get("/categories")
+def get_project_categories():
+    """Return distinct project categories with their counts, for filter UIs."""
+    counts: dict[str, int] = {}
+    for p in PROJECTS:
+        counts[p["category"]] = counts.get(p["category"], 0) + 1
+    categories = [{"category": c, "count": n} for c, n in counts.items()]
+    categories.sort(key=lambda x: (-x["count"], x["category"]))
+    return ok(categories)
+
+
 @router.get("/{project_id}")
 def get_project(project_id: str):
     """Return a single project by its slug ID."""
@@ -46,6 +57,23 @@ def get_project(project_id: str):
     if not project:
         raise HTTPException(status_code=404, detail="Project not found.")
     return ok(project)
+
+
+@router.get("/{project_id}/related")
+def get_related_projects(
+    project_id: str,
+    limit: int = Query(default=3, ge=1, le=12, description="Max projects to return."),
+):
+    """Return projects in the same category as the given project, excluding itself."""
+    project = next((p for p in PROJECTS if p["id"] == project_id), None)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found.")
+
+    related = [
+        p for p in PROJECTS
+        if p["category"] == project["category"] and p["id"] != project_id
+    ]
+    return ok(related[:limit])
 
 
 @router.get("/{project_id}/export")
