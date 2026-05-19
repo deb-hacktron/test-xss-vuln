@@ -48,6 +48,23 @@ def get_project(project_id: str):
     return ok(project)
 
 
+@router.get("/{project_id}/related")
+def get_related_projects(
+    project_id: str,
+    limit: int = Query(default=3, ge=1, le=12, description="Max projects to return."),
+):
+    """Return projects in the same category as the given project, excluding itself."""
+    project = next((p for p in PROJECTS if p["id"] == project_id), None)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found.")
+
+    related = [
+        p for p in PROJECTS
+        if p["category"] == project["category"] and p["id"] != project_id
+    ]
+    return ok(related[:limit])
+
+
 @router.get("/{project_id}/export")
 def export_project(
     project_id: str,

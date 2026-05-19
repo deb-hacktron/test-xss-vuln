@@ -91,6 +91,7 @@ def root():
             "GET  /api/v1/services/{id}",
             "GET  /api/v1/projects",
             "GET  /api/v1/projects/{id}",
+            "GET  /api/v1/projects/{id}/related",
             "GET  /api/v1/team",
             "GET  /api/v1/team/{id}",
             "POST /api/v1/contact",
