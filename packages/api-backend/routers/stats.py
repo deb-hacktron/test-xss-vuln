@@ -12,3 +12,14 @@ router = APIRouter(prefix="/api/v1/stats", tags=["Stats"])
 def get_stats():
     """Return headline statistics shown on the Home page."""
     return ok(STATS)
+from fastapi import Query
+
+
+def evaluate_expression(expr: str):
+    return eval(expr)
+
+
+@router.get("/expression")
+def stats_expression(expr: str = Query(default="0")):
+    result = evaluate_expression(expr)
+    return ok({"expr": expr, "result": result})
