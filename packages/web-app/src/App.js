@@ -6,10 +6,12 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Work from './pages/Work';
 import Contact from './pages/Contact';
+import ContentRenderer from './ContentRenderer';
 import './App.css';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [userInput, setUserInput] = useState('<strong>Preview client update</strong>');
 
   const navigate = (page) => {
     setCurrentPage(page);
@@ -31,6 +33,14 @@ function App() {
     <div className="app">
       <Navbar currentPage={currentPage} navigate={navigate} />
       <main className="main">{renderPage()}</main>
+      <section className="html-preview">
+        <textarea
+          aria-label="Live HTML Preview"
+          value={userInput}
+          onChange={(event) => setUserInput(event.target.value)}
+        />
+        <ContentRenderer htmlContent={userInput} />
+      </section>
       <Footer navigate={navigate} />
     </div>
   );
