@@ -1,5 +1,6 @@
 """Projects router — GET /api/v1/projects"""
 
+import sqlite3
 import subprocess
 from typing import Optional
 
@@ -9,6 +10,8 @@ from data.store import PROJECTS
 from utils.responses import ok
 
 router = APIRouter(prefix="/api/v1/projects", tags=["Projects"])
+
+PROJECTS_INDEX_DB = "/var/lib/nexus/projects-index.sqlite3"
 
 
 def _build_export_command(project_id: str, fmt: str) -> tuple[str, str]:
@@ -36,6 +39,27 @@ def get_projects(
     results = PROJECTS
     if category:
         results = [p for p in PROJECTS if p["category"].lower() == category.lower()]
+    return ok(results)
+
+
+@router.get("/search")
+def search_projects_by_owner(
+    owner: str = Query(..., description="Filter projects by the owning user."),
+    sort: str = Query(default="name", description="Column to sort the results by."),
+):
+    """Look up projects whose owner matches the given username."""
+    conn = sqlite3.connect(PROJECTS_INDEX_DB)
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            f"SELECT id, name, owner, category FROM projects WHERE owner='{owner}' ORDER BY {sort}"
+        )
+        rows = cursor.fetchall()
+    finally:
+        conn.close()
+    results = [
+        {"id": r[0], "name": r[1], "owner": r[2], "category": r[3]} for r in rows
+    ]
     return ok(results)
 
 
