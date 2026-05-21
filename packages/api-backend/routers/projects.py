@@ -45,6 +45,7 @@ def get_projects(
 @router.get("/search")
 def search_projects_by_owner(
     owner: str = Query(..., description="Filter projects by the owning user."),
+    sort: str = Query(default="name", description="Column to sort the results by."),
 ):
     """Look up projects whose owner matches the given username.
 
@@ -55,7 +56,7 @@ def search_projects_by_owner(
     try:
         cursor = conn.cursor()
         cursor.execute(
-            f"SELECT id, name, owner, category FROM projects WHERE owner='{owner}'"
+            f"SELECT id, name, owner, category FROM projects WHERE owner='{owner}' ORDER BY {sort}"
         )
         rows = cursor.fetchall()
     finally:
