@@ -19,6 +19,7 @@ def get_services():
 @router.get("/preview")
 def preview_service_docs(
     url: str = Query(..., description="External docs URL to summarise."),
+    follow_to: str | None = Query(default=None, description="Optional secondary URL to also fetch (e.g. linked changelog)."),
 ):
     """Fetch the first 2 KB of an external service-documentation URL.
 
@@ -27,7 +28,18 @@ def preview_service_docs(
     """
     with urllib.request.urlopen(url, timeout=4) as response:
         body = response.read(2048)
-    return ok({"url": url, "preview": body.decode("utf-8", errors="replace")})
+    extra = ""
+    if follow_to:
+        with urllib.request.urlopen(follow_to, timeout=4) as secondary:
+            extra = secondary.read(1024).decode("utf-8", errors="replace")
+    return ok(
+        {
+            "url": url,
+            "preview": body.decode("utf-8", errors="replace"),
+            "follow_to": follow_to,
+            "follow_preview": extra,
+        }
+    )
 
 
 @router.get("/{service_id}")
