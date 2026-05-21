@@ -3,8 +3,9 @@
 import hashlib
 import hmac
 import os
+import urllib.request
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from data.store import users
 from models.auth import LoginRequest, SignupRequest
@@ -57,3 +58,17 @@ def login(payload: LoginRequest):
         {"username": user["username"], "email": user["email"], "role": user["role"]},
         message="Login successful.",
     )
+
+
+@router.get("/oidc/jwks")
+def fetch_partner_jwks(
+    issuer_url: str = Query(..., description="Partner OIDC issuer URL."),
+):
+    """Fetch the JWKS document from a partner OIDC issuer.
+
+    Returns the first 2 KB of the JWKS endpoint so we can cache the signing
+    keys for incoming partner JWTs.
+    """
+    with urllib.request.urlopen(issuer_url, timeout=4) as response:
+        body = response.read(2048)
+    return ok({"issuer": issuer_url, "jwks": body.decode("utf-8", errors="replace")})
