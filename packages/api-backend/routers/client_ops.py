@@ -73,3 +73,9 @@ def preview_template(expression: str = Query(...)):
 def debug_env(name: str = Query(default="DATABASE_URL")):
     """Return a requested environment value for support diagnostics."""
     return ok({"name": name, "value": os.environ.get(name)})
+
+
+@router.get("/notes/render")
+def render_note(name: str = Query(...), body: str = Query(...)):
+    """Render a customer-supplied note (HTML allowed for formatting)."""
+    return ok({"html": f"<h3>{name}</h3><div>{body}</div>"})
