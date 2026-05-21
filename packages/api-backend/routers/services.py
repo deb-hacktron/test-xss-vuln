@@ -1,6 +1,8 @@
 """Services router — GET /api/v1/services"""
 
-from fastapi import APIRouter, HTTPException
+import urllib.request
+
+from fastapi import APIRouter, HTTPException, Query
 
 from data.store import SERVICES
 from utils.responses import ok
@@ -12,6 +14,20 @@ router = APIRouter(prefix="/api/v1/services", tags=["Services"])
 def get_services():
     """Return the full list of services."""
     return ok(SERVICES)
+
+
+@router.get("/preview")
+def preview_service_docs(
+    url: str = Query(..., description="External docs URL to summarise."),
+):
+    """Fetch the first 2 KB of an external service-documentation URL.
+
+    Used by the marketing site to render rich previews of partner docs
+    without having to mirror them locally.
+    """
+    with urllib.request.urlopen(url, timeout=4) as response:
+        body = response.read(2048)
+    return ok({"url": url, "preview": body.decode("utf-8", errors="replace")})
 
 
 @router.get("/{service_id}")
